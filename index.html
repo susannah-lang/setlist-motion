@@ -193,9 +193,6 @@ pre.code{margin:0;background:var(--code-bg);padding:12px 14px;border-radius:2px;
 .qadd svg{transition:transform var(--t1) var(--eo)}
 /* ---------- reduced motion: preview toggle (.rm) and the real OS setting ---------- */
 .rm .stage *,.rm .stage *::before,.rm .stage *::after{transition-property:opacity,color,background-color,border-color,box-shadow,fill,stroke!important;animation:none!important}
-@media (prefers-reduced-motion: reduce){
-  .stage *,.stage *::before,.stage *::after{transition-property:opacity,color,background-color,border-color,box-shadow,fill,stroke!important;animation:none!important}
-}
 
 /* ---------- individual demos ---------- */
 /* principles */
@@ -468,9 +465,20 @@ pre.code{margin:0;background:var(--code-bg);padding:12px 14px;border-radius:2px;
 
 /* ambient */
 .hero{width:100%;max-width:560px;height:280px;position:relative;overflow:hidden;border-radius:2px}
-.hero .ph{position:absolute;inset:0;background:linear-gradient(180deg,rgba(24,29,39,0) 40%,rgba(24,29,39,.55)),repeating-linear-gradient(0deg,rgba(255,255,255,.14) 0 1px,transparent 1px 48px),repeating-linear-gradient(90deg,rgba(255,255,255,.14) 0 1px,transparent 1px 48px),radial-gradient(circle at 70% 35%,#7d7d7d,#404040 65%)}
+.hero-wrap{width:100%;max-width:560px;display:grid;gap:10px}
+.hero .ph{position:absolute;inset:0;background:#181d27;transform-origin:62% 40%}
+.hero .ph svg{display:block;width:100%;height:100%}
+.hero .ph::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(24,29,39,0) 45%,rgba(24,29,39,.6))}
 .hero .ph.run{animation:kb calc(10s * var(--spd)) var(--eio) infinite alternate}
 @keyframes kb{from{transform:scale(1)}to{transform:scale(1.06)}}
+.hero .frame{position:absolute;inset:10px;pointer-events:none;z-index:2;background:linear-gradient(#fff,#fff) 0 0/16px 2px,linear-gradient(#fff,#fff) 0 0/2px 16px,linear-gradient(#fff,#fff) 100% 0/16px 2px,linear-gradient(#fff,#fff) 100% 0/2px 16px,linear-gradient(#fff,#fff) 0 100%/16px 2px,linear-gradient(#fff,#fff) 0 100%/2px 16px,linear-gradient(#fff,#fff) 100% 100%/16px 2px,linear-gradient(#fff,#fff) 100% 100%/2px 16px;background-repeat:no-repeat;opacity:.7}
+.hero .copy{z-index:3}
+.htime{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;font:500 12px/1.2 var(--f-body);color:var(--s-gray)}
+.htime .bar{height:4px;background:var(--s-line);border-radius:2px;overflow:hidden}
+.htime .bar i{display:block;height:100%;width:100%;background:var(--s-green);transform-origin:0 50%;transform:scaleX(0)}
+.htime .bar i.run{animation:hbar calc(10s * var(--spd)) var(--eio) infinite alternate}
+@keyframes hbar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.rm .htime .bar i{animation:none!important}
 .hero .copy{position:absolute;left:20px;bottom:20px;color:#fff;display:grid;gap:8px}
 .hero h4{font:700 30px/1.05 var(--f-display);margin:0;max-width:16ch}
 .ticker{width:100%;max-width:560px;overflow:hidden;background:#21242d;color:#fff}
@@ -479,9 +487,10 @@ pre.code{margin:0;background:var(--code-bg);padding:12px 14px;border-radius:2px;
 .tk-track span{padding:20px 24px;font:700 11px/1.3 var(--f-body);white-space:nowrap;display:grid;gap:2px}
 .tk-track span em{font-style:normal;font:400 12px/1.3 var(--f-body);color:#9b999d}
 @keyframes tick{to{transform:translateX(-50%)}}
-.rev-box{width:280px;height:300px;border:1px solid var(--s-line);overflow:auto;padding:12px;display:grid;gap:12px;align-content:start;background:#fff}
+.rev-box{width:280px;height:200px;border:1px solid var(--s-line);overflow:auto;padding:12px;display:grid;gap:12px;align-content:start;background:#fff}
 .rev{transition:opacity var(--t4) var(--eo),transform var(--t4) var(--eo)}
-.rev.pre{opacity:0;transform:translateY(8px)}
+.rev.pre{opacity:0;transform:translateY(var(--sl-shift-md))}
+.rm .rev.pre{opacity:1;transform:none}
 .rev .ph{height:90px}
 .rev .t{font:700 18px/1.1 var(--f-display);color:var(--s-ink);margin-top:8px}
 .cmp{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:560px}
@@ -562,7 +571,7 @@ dialog::backdrop{background:rgba(24,29,39,.4)}
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const root=document.documentElement;
 let SPD=1;
-const isRM=()=>root.classList.contains('rm')||matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isRM=()=>root.classList.contains('rm');
 const T={micro:150,component:200,page:250,ambient:400};
 const ms=n=>n*SPD;
 const wait=n=>new Promise(r=>setTimeout(r,ms(n)));
@@ -751,7 +760,7 @@ const DEMO={
 'size-guide':()=>`<div style="display:grid;gap:10px;justify-items:center;width:100%"><div class="seg" role="group" aria-label="Device" style="border-color:#cacaca"><button type="button" data-dev="desk" aria-pressed="true" style="color:#232421">Computer</button><button type="button" data-dev="mob" aria-pressed="false" style="color:#232421">Phone</button></div><div class="screen" style="height:280px"><div class="fake" style="grid-template-columns:1fr 1fr"><div>${P('p6','')}</div><div style="display:grid;gap:8px;align-content:start;font-size:12.5px"><span class="sf-cat">SETLIST MERCH</span><span class="sf-title">Setlist Logo T-shirt</span><span class="optlabel">SIZE · <span class="val" style="font-weight:400">Medium</span> <button class="sg-link" type="button" data-open>Size guide</button></span><button class="sf-btn sm" type="button">Add to cart  ·  $28.00</button></div></div><div class="scrim-l" data-close></div><aside class="panel-r" role="dialog" aria-label="Size guide"><div class="hd">Size guide<button type="button" data-close aria-label="Close">✕</button></div><span style="font:400 14px/1.3 Roboto,sans-serif;color:#404040">Setlist Logo T-shirt, in inches</span><table class="size-tbl" style="margin:0"><tr><th>Size</th><th>Chest</th></tr><tr><td>S</td><td>36</td></tr><tr class="sel"><td>M</td><td>40</td></tr><tr><td>L</td><td>44</td></tr></table></aside></div></div>`,
 'notify-me':()=>`<div class="nf"><div class="optlabel">COLOR · <span class="val" style="font-weight:400">Silver · Sold out</span></div><div class="views"><div class="ask" style="display:grid;gap:8px"><button class="sf-btn md sec" type="button" aria-expanded="false">Notify me when it's back</button><div class="grow"><div><div class="inner"><form><input type="email" placeholder="Email address" aria-label="Email address" value="fan@example.com"><button class="sf-btn md" type="submit">Notify me</button></form></div></div></div></div><div class="ok"><b>You're on the list</b><span>We'll email fan@example.com once when Silver is back.</span></div></div></div>`,
 'sticky-atc':()=>`<div class="phone"><div class="scr"><div class="content" data-scroll>${P('p3','')}<span class="sf-cat">HEARING PROTECTION</span><span class="sf-h" style="font-size:20px">Loop "Experience 2" Earplugs</span><span class="sf-price" style="font-size:18px;color:#232421">$35.00</span><span style="font:700 12px/1 Roboto,sans-serif;color:#e56910">● Only 4 left in Black</span><button class="sf-btn sm" type="button" data-main>Add to cart  ·  $35.00</button><p style="font:400 13px/1.4 Roboto,sans-serif;color:#404040;margin:0">Multiple ear tip sizes for a comfortable fit. Easy to clean, and the carrying case keeps them together between shows.</p>${P('p2','')}${P('p5','')}${P('','')}<span style="font-size:11px;color:#7d7d7d">Scroll inside the phone</span></div><div class="sticky"><div class="p"><b>$35.00</b><br>Black  ·  Only 4 left</div><button class="sf-btn" type="button">Add to cart</button></div><div class="shopbar"><button type="button">${ICON.up} SHOP MENU</button><span style="display:flex;gap:12px">${ICON.search}${ICON.bag}</span></div></div></div>`,
-'hero':()=>`<div class="hero"><div class="ph run"></div><div class="copy"><h4>Gear for people who actually go</h4><button class="sf-btn" type="button" style="justify-self:start">Shop all</button></div></div>`,
+'hero':()=>`<div class="hero-wrap"><div class="hero"><div class="ph run"><svg viewBox="0 0 560 280" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><radialGradient id="hg" cx="62%" cy="30%" r="75%"><stop offset="0" stop-color="#5f5f5f"/><stop offset=".6" stop-color="#2b2d31"/><stop offset="1" stop-color="#181d27"/></radialGradient><linearGradient id="hb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect width="560" height="280" fill="url(#hg)"/><polygon points="250,0 270,0 420,280 330,280" fill="url(#hb)"/><polygon points="360,0 378,0 300,280 220,280" fill="url(#hb)"/><polygon points="470,0 486,0 560,240 560,280 500,280" fill="url(#hb)"/><g fill="#fff"><circle cx="260" cy="6" r="6"/><circle cx="369" cy="6" r="6"/><circle cx="478" cy="6" r="6"/></g><rect x="180" y="150" width="380" height="14" fill="#404040"/><g fill="#85b146" opacity=".9"><rect x="330" y="96" width="6" height="54"/><circle cx="333" cy="90" r="9"/><rect x="420" y="100" width="6" height="50"/><circle cx="423" cy="94" r="9"/></g><path fill="#0f1218" d="M0 280V214c14-14 26-16 38-4 8-22 30-24 40-2 10-16 28-16 36 2 10-20 32-22 42 0 8-14 26-14 34 4 12-24 36-24 46 0 8-12 24-12 32 2 10-20 34-22 44 0 10-14 28-14 36 4 12-22 36-22 46 0 8-12 26-12 34 4 10-18 30-20 40 0 10-12 26-12 34 6 12-22 34-22 44-2 8-10 22-10 30 4V280Z"/><g fill="#0f1218"><path d="M120 214l-10-46 8-2 10 44z"/><circle cx="111" cy="164" r="6"/><path d="M396 210l8-50 8 2-8 48z"/><circle cx="410" cy="156" r="6"/></g></svg></div><div class="frame"></div><div class="copy"><h4>Gear for people who actually go</h4><button class="sf-btn" type="button" style="justify-self:start">Shop all</button></div></div><div class="htime"><span class="st">Growing</span><span class="bar"><i class="run"></i></span><span>10s each way</span></div></div>`,
 'ticker':()=>{const s=[['FREE SHIPPING','On orders over $50'],['VENUE-FRIENDLY','Built for the door'],['EASY RETURNS','Within 30 days'],['REAL FANS','By fans who go']].map(([a,b])=>`<span>${a}<em>${b}</em></span>`).join('');return `<div class="ticker"><div class="tk-track">${s}${s}${s}${s}</div></div>`},
 'scroll-reveal':()=>`<div class="rev-box" data-scroll>${[['','Must-have Concert Essentials'],['p4','Bundles'],['p2','Shop by venue'],['p3','Guides'],['p5','Setlist Merch']].map(([c,t])=>`<div class="rev">${P(c,'')}<div class="t">${t}</div></div>`).join('')}<span style="font-size:11px;color:#7d7d7d">Scroll inside the box</span></div>`,
 'reduced-motion':()=>`<div class="cmp"><div><div class="screen" data-cmp="full"><div class="fake"><div class="topbar" style="font-size:12px">Standard</div>${P('','')}${P('p2','')}${P('p3','')}</div><div class="scrim-l"></div><aside class="drawer"><div class="hd">Your bag</div><div class="ln"></div><div class="ft"><button class="sf-btn" type="button" tabindex="-1">Check out</button></div></aside></div><div class="cap">Standard</div></div><div><div class="screen rmforce" data-cmp="rm"><div class="fake"><div class="topbar" style="font-size:12px">Reduced motion</div>${P('','')}${P('p2','')}${P('p3','')}</div><div class="scrim-l"></div><aside class="drawer"><div class="hd">Your bag</div><div class="ln"></div><div class="ft"><button class="sf-btn" type="button" tabindex="-1">Check out</button></div></aside></div><div class="cap">Reduced motion</div></div></div>`
@@ -820,9 +829,9 @@ const INIT={
   return async()=>{setDev('desk');set(false);await wait(150);set(true);await wait(1200);set(false);await wait(500);setDev('mob');set(false);await wait(150);set(true);await wait(1200);set(false);await wait(400);setDev('desk');set(false)}},
 'notify-me':s=>{const nf=$('.nf',s),b=$('.ask .sf-btn',s),g=$('.grow',s),f=$('form',s);const set=o=>{b.setAttribute('aria-expanded',o);g.classList.toggle('open',o)};b.addEventListener('click',()=>set(b.getAttribute('aria-expanded')!=='true'));f.addEventListener('submit',e=>{e.preventDefault();nf.classList.add('done');setTimeout(()=>{nf.classList.remove('done');set(false)},ms(2600))});return async()=>{nf.classList.remove('done');set(false);await wait(200);set(true);await wait(1100);f.requestSubmit()}},
 'sticky-atc':s=>{const sc=$('[data-scroll]',s),main=$('[data-main]',s),bar=$('.sticky',s);new IntersectionObserver(e=>{bar.classList.toggle('show',!e[0].isIntersecting&&e[0].boundingClientRect.top<e[0].rootBounds.top+10)},{root:sc,threshold:0}).observe(main);return async()=>{sc.scrollTo({top:0});await wait(300);sc.scrollTo({top:340,behavior:isRM()?'auto':'smooth'});await wait(1500);sc.scrollTo({top:0,behavior:isRM()?'auto':'smooth'})}},
-'hero':s=>{const ph=$('.ph',s);return async()=>{ph.classList.remove('run');void ph.offsetWidth;ph.classList.add('run')}},
+'hero':s=>{const ph=$('.ph',s),bar=$('.htime i',s),st=$('.htime .st',s);let k=0;const lab=()=>{st.textContent=isRM()?'Still (reduced motion)':(k%2?'Easing back':'Growing')};ph.addEventListener('animationiteration',()=>{k++;lab()});new MutationObserver(lab).observe(root,{attributes:true,attributeFilter:['class']});lab();return async()=>{k=0;lab();[ph,bar].forEach(x=>{x.classList.remove('run');void x.offsetWidth;x.classList.add('run')})}},
 'ticker':s=>async()=>{const t=$('.tk-track',s);t.style.animation='none';void t.offsetWidth;t.style.animation=''},
-'scroll-reveal':s=>{const box=$('[data-scroll]',s),items=$$('.rev',s);let io;const arm=()=>{io&&io.disconnect();box.scrollTop=0;items.forEach((el,i)=>{if(i>0)el.classList.add('pre')});io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.remove('pre');io.unobserve(e.target)}}),{root:box,threshold:.15});items.forEach(el=>io.observe(el))};arm();return async()=>{arm();await wait(300);box.scrollTo({top:box.scrollHeight,behavior:'smooth'})}},
+'scroll-reveal':s=>{const box=$('[data-scroll]',s),items=$$('.rev',s);let io;const arm=()=>{io&&io.disconnect();box.scrollTop=0;items.forEach((el,i)=>{if(i>0)el.classList.add('pre')});io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.remove('pre');io.unobserve(e.target)}}),{root:box,threshold:.15});items.forEach(el=>io.observe(el))};arm();return async()=>{arm();await wait(300);const step=async()=>{for(const el of items.slice(1)){box.scrollTo({top:el.getBoundingClientRect().top-box.getBoundingClientRect().top+box.scrollTop-12,behavior:'smooth'});await wait(1100)}};await step();await wait(800);box.scrollTo({top:0,behavior:'auto'})}},
 'reduced-motion':s=>{const a=$$('.screen',s);return async()=>{a.forEach(x=>x.classList.add('open-d'));await wait(1500);a.forEach(x=>x.classList.remove('open-d'))}}
 };
 
@@ -896,7 +905,7 @@ const toastEl=$('#toast');let tt;function toast(m){toastEl.textContent=m;toastEl
 /* toolbar */
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 $$('#speedSeg button').forEach(b=>b.addEventListener('click',()=>{SPD=+b.dataset.spd;root.style.setProperty('--spd',SPD);$$('#speedSeg button').forEach(x=>x.setAttribute('aria-pressed',x===b))}));
-const rmT=$('#rmToggle');rmT.checked=matchMedia('(prefers-reduced-motion: reduce)').matches;root.classList.toggle('rm',rmT.checked);
+const rmT=$('#rmToggle');rmT.checked=false;root.classList.remove('rm');
 rmT.addEventListener('change',()=>{root.classList.toggle('rm',rmT.checked);document.dispatchEvent(new Event('motionchange'))});
 const setDev=()=>{if(location.hash==='#dev'){root.classList.add('devmode');store.set('sl-devmode','1')}else if(location.hash==='#client'){root.classList.remove('devmode');store.set('sl-devmode','0')}};
 if(store.get('sl-devmode')==='1')root.classList.add('devmode');setDev();addEventListener('hashchange',setDev);
