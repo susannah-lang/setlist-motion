@@ -469,24 +469,24 @@ pre.code{margin:0;background:var(--code-bg);padding:12px 14px;border-radius:2px;
 .hero .ph{position:absolute;inset:0;background:#181d27;transform-origin:62% 40%}
 .hero .ph svg{display:block;width:100%;height:100%}
 .hero .ph::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(24,29,39,0) 45%,rgba(24,29,39,.6))}
-.hero .ph.run{animation:kb calc(10s * var(--spd)) var(--eio) infinite alternate}
+.hero .ph.run{animation:kb calc(10s * var(--spd)) linear infinite alternate}
 @keyframes kb{from{transform:scale(1)}to{transform:scale(1.06)}}
 .hero .frame{position:absolute;inset:10px;pointer-events:none;z-index:2;background:linear-gradient(#fff,#fff) 0 0/16px 2px,linear-gradient(#fff,#fff) 0 0/2px 16px,linear-gradient(#fff,#fff) 100% 0/16px 2px,linear-gradient(#fff,#fff) 100% 0/2px 16px,linear-gradient(#fff,#fff) 0 100%/16px 2px,linear-gradient(#fff,#fff) 0 100%/2px 16px,linear-gradient(#fff,#fff) 100% 100%/16px 2px,linear-gradient(#fff,#fff) 100% 100%/2px 16px;background-repeat:no-repeat;opacity:.7}
 .hero .copy{z-index:3}
 .htime{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;font:500 12px/1.2 var(--f-body);color:var(--s-gray)}
 .htime .bar{height:4px;background:var(--s-line);border-radius:2px;overflow:hidden}
 .htime .bar i{display:block;height:100%;width:100%;background:var(--s-green);transform-origin:0 50%;transform:scaleX(0)}
-.htime .bar i.run{animation:hbar calc(10s * var(--spd)) var(--eio) infinite alternate}
+.htime .bar i.run{animation:hbar calc(10s * var(--spd)) linear infinite alternate}
 @keyframes hbar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 .rm .htime .bar i{animation:none!important}
 .hero .copy{position:absolute;left:20px;bottom:20px;color:#fff;display:grid;gap:8px}
 .hero h4{font:700 30px/1.05 var(--f-display);margin:0;max-width:16ch}
 .ticker{width:100%;max-width:560px;overflow:hidden;background:#21242d;color:#fff}
 .ticker:hover .tk-track{animation-play-state:paused}
-.tk-track{display:flex;width:max-content;animation:tick calc(24s * var(--spd)) linear infinite}
-.tk-track span{padding:20px 24px;font:700 11px/1.3 var(--f-body);white-space:nowrap;display:grid;gap:2px}
+.tk-track{display:flex;width:max-content;animation:tick calc(12s * var(--spd)) var(--eio) infinite}
+.tk-track span{flex:0 0 168px;box-sizing:border-box;padding:20px 24px;font:700 11px/1.3 var(--f-body);white-space:nowrap;display:grid;gap:2px}
 .tk-track span em{font-style:normal;font:400 12px/1.3 var(--f-body);color:#9b999d}
-@keyframes tick{to{transform:translateX(-50%)}}
+@keyframes tick{0%,19%{transform:translateX(0)}25%,44%{transform:translateX(-6.25%)}50%,69%{transform:translateX(-12.5%)}75%,94%{transform:translateX(-18.75%)}100%{transform:translateX(-25%)}}
 .rev-box{width:280px;height:200px;border:1px solid var(--s-line);overflow:auto;padding:12px;display:grid;gap:12px;align-content:start;background:#fff}
 .rev{transition:opacity var(--t4) var(--eo),transform var(--t4) var(--eo)}
 .rev.pre{opacity:0;transform:translateY(var(--sl-shift-md))}
@@ -633,7 +633,7 @@ const ITEMS=[
 {id:'quantity',g:'micro',n:'10.0.2.06',title:'Quantity stepper',see:'The number rolls up when you add one and down when you remove one, so the change is easy to notice.',where:'8.0 Cart page · Cart drawer line items',trigger:'Click + or −',
  m:[['old number','translateY, opacity','0, 1','∓8px, 0','micro','out'],['new number','translateY, opacity','±8px, 0','0, 1','micro','out']],
  reduced:'Number swaps instantly.',file:'snippets/sl-quantity.liquid · sl-theme.js',
- css:`.qty__value { transition: transform var(--sl-dur-micro) var(--sl-ease-out), opacity var(--sl-dur-micro) var(--sl-ease-out); }\n/* JS: render next value at translateY(±var(--sl-shift-md)), then clear on next frame */`},
+ css:`.qty__value { transition: transform var(--sl-dur-micro) var(--sl-ease-out), opacity var(--sl-dur-micro) var(--sl-ease-out); }\n/* JS: render next value at translateY(±var(--sl-shift-md)), then clear on next frame */\n/* Build note (client review): only one number may show at a time. Remove the outgoing\n   value when its transition ends, and on rapid clicks finish or cancel the previous roll\n   first, so digits never stack on top of each other. The mock's overlap is not the spec. */`},
 {id:'quick-add',g:'micro',n:'10.0.2.07',title:'Quick add on a product card',see:'The plus turns into a close mark and the options rise up from the bottom of the card. After adding, the panel confirms with Added to cart and View cart.',where:'2.0 PLP · Product card states · 3.4 You may also like',trigger:'Click the + on a card',
  m:[['+ icon','rotate','0','45deg','micro','out'],['options panel','translateY, opacity','100%, 0','0, 1','component','out'],['panel content','opacity crossfade','choose','added','micro','out'],['+ button (Added)','background-color','white','brand-500','micro','out']],
  reduced:'Panel fades in place. Icon swaps without rotating.',file:'snippets/sl-product-card.liquid · sl-theme.js',
@@ -708,14 +708,14 @@ const ITEMS=[
  reduced:'Bar fades in place.',file:'sections/sl-main-product.liquid (IntersectionObserver)',
  css:`.sticky-atc { transform: translateY(100%); opacity: 0;\n  transition: transform var(--sl-dur-micro) var(--sl-ease-in), opacity var(--sl-dur-micro) var(--sl-ease-in); }\n.sticky-atc.is-visible { transform: none; opacity: 1;\n  transition-duration: var(--sl-dur-component); transition-timing-function: var(--sl-ease-out); }`},
 
-{id:'hero',g:'ambient',n:'10.0.3.a',title:'Hero slow zoom',see:'The hero photo grows very slowly, over about 10 seconds, then eases back. It stops once a shopper scrolls past. It can be switched off per hero.',where:'1.0 Homepage · Hero',trigger:'Page load (hero setting, on by default)',
- m:[['hero image','scale','1','1.06, alternates','','io'],['cycle','duration','','10s each way','','']],
+{id:'hero',g:'ambient',n:'10.0.3.a',title:'Hero slow zoom',see:'The hero photo grows very slowly and steadily, over about 10 seconds, then shrinks back at the same pace. It stops once a shopper scrolls past. It can be switched off per hero.',where:'1.0 Homepage · Hero',trigger:'Page load (hero setting, on by default)',
+ m:[['hero image','scale','1','1.06, alternates','','lin'],['cycle','duration','','10s each way','','']],
  reduced:'Off. The photo stays still.',file:'sections/sl-hero.liquid',
- css:`@keyframes sl-hero-zoom { to { transform: scale(1.06); } }\n.hero__img.is-animated { animation: sl-hero-zoom 10s var(--sl-ease-in-out) infinite alternate; }\n/* pause when the hero leaves the viewport */`},
-{id:'ticker',g:'ambient',n:'10.0.3.b',title:'Trust strip ticker',see:'The trust strip (free shipping, venue-ready, easy returns, real fans) scrolls slowly on phones and stops when a shopper touches or points at it.',where:'0.0.8 Footer · Trust band',trigger:'Always on (footer setting, mobile only by default)',
- m:[['strip','translateX','0','-50% (seamless loop)','','lin'],['cycle','duration','','24s per loop, pauses on hover and touch','','']],
+ css:`@keyframes sl-hero-zoom { to { transform: scale(1.06); } }\n.hero__img.is-animated { animation: sl-hero-zoom 10s linear infinite alternate; /* steady pace, no ease in or out */ }\n/* pause when the hero leaves the viewport */`},
+{id:'ticker',g:'ambient',n:'10.0.3.b',title:'Trust strip ticker',see:'The trust strip (free shipping, venue-ready, easy returns, real fans) slides over one block at a time on phones, settles, pauses, then moves again. It stops when a shopper touches or points at it.',where:'0.0.8 Footer · Trust band',trigger:'Always on (footer setting, mobile only by default)',
+ m:[['strip','translateX','0','one block width per step (seamless loop)','','io'],['step','duration','','0.7s slide, then 2.3s pause (3s per block)','',''],['cycle','duration','','12s for all 4 blocks, pauses on hover and touch','','']],
  reduced:'Off. Items wrap onto two lines instead.',file:'sections/sl-footer.liquid',
- css:`@keyframes sl-ticker { to { transform: translateX(-50%); } }\n.ticker__track { animation: sl-ticker 24s linear infinite; }\n.ticker:hover .ticker__track { animation-play-state: paused; }`},
+ css:`/* 4 equal-width blocks, repeated so the loop is seamless. Each step = 1 block. */\n@keyframes sl-ticker {\n  0%, 19%  { transform: translateX(0); }\n  25%, 44% { transform: translateX(calc(var(--block) * -1)); }\n  50%, 69% { transform: translateX(calc(var(--block) * -2)); }\n  75%, 94% { transform: translateX(calc(var(--block) * -3)); }\n  100%     { transform: translateX(calc(var(--block) * -4)); }\n}\n.ticker__item { flex: 0 0 var(--block); }\n.ticker__track { animation: sl-ticker 12s var(--sl-ease-in-out) infinite; }\n.ticker:hover .ticker__track { animation-play-state: paused; }`},
 {id:'scroll-reveal',g:'ambient',n:'10.0.3.c',title:'Scroll reveal',see:'Homepage and guide sections fade and rise slightly as they come into view, once only. Product cards, product pages, the cart and policy pages do not do this.',where:'1.0 Homepage · 6.0 Guides',trigger:'Section enters the viewport (once)',
  m:[['section','opacity, translateY','0, 8px','1, 0','ambient','out'],['observer','threshold','','15% visible, unobserve after first reveal','','']],
  reduced:'Off. Sections are visible from the start.',file:'assets/sl-theme.js initMotion()',
@@ -829,7 +829,7 @@ const INIT={
   return async()=>{setDev('desk');set(false);await wait(150);set(true);await wait(1200);set(false);await wait(500);setDev('mob');set(false);await wait(150);set(true);await wait(1200);set(false);await wait(400);setDev('desk');set(false)}},
 'notify-me':s=>{const nf=$('.nf',s),b=$('.ask .sf-btn',s),g=$('.grow',s),f=$('form',s);const set=o=>{b.setAttribute('aria-expanded',o);g.classList.toggle('open',o)};b.addEventListener('click',()=>set(b.getAttribute('aria-expanded')!=='true'));f.addEventListener('submit',e=>{e.preventDefault();nf.classList.add('done');setTimeout(()=>{nf.classList.remove('done');set(false)},ms(2600))});return async()=>{nf.classList.remove('done');set(false);await wait(200);set(true);await wait(1100);f.requestSubmit()}},
 'sticky-atc':s=>{const sc=$('[data-scroll]',s),main=$('[data-main]',s),bar=$('.sticky',s);new IntersectionObserver(e=>{bar.classList.toggle('show',!e[0].isIntersecting&&e[0].boundingClientRect.top<e[0].rootBounds.top+10)},{root:sc,threshold:0}).observe(main);return async()=>{sc.scrollTo({top:0});await wait(300);sc.scrollTo({top:340,behavior:isRM()?'auto':'smooth'});await wait(1500);sc.scrollTo({top:0,behavior:isRM()?'auto':'smooth'})}},
-'hero':s=>{const ph=$('.ph',s),bar=$('.htime i',s),st=$('.htime .st',s);let k=0;const lab=()=>{st.textContent=isRM()?'Still (reduced motion)':(k%2?'Easing back':'Growing')};ph.addEventListener('animationiteration',()=>{k++;lab()});new MutationObserver(lab).observe(root,{attributes:true,attributeFilter:['class']});lab();return async()=>{k=0;lab();[ph,bar].forEach(x=>{x.classList.remove('run');void x.offsetWidth;x.classList.add('run')})}},
+'hero':s=>{const ph=$('.ph',s),bar=$('.htime i',s),st=$('.htime .st',s);let k=0;const lab=()=>{st.textContent=isRM()?'Still (reduced motion)':(k%2?'Shrinking back':'Growing')};ph.addEventListener('animationiteration',()=>{k++;lab()});new MutationObserver(lab).observe(root,{attributes:true,attributeFilter:['class']});lab();return async()=>{k=0;lab();[ph,bar].forEach(x=>{x.classList.remove('run');void x.offsetWidth;x.classList.add('run')})}},
 'ticker':s=>async()=>{const t=$('.tk-track',s);t.style.animation='none';void t.offsetWidth;t.style.animation=''},
 'scroll-reveal':s=>{const box=$('[data-scroll]',s),items=$$('.rev',s);let io;const arm=()=>{io&&io.disconnect();box.scrollTop=0;items.forEach((el,i)=>{if(i>0)el.classList.add('pre')});io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.remove('pre');io.unobserve(e.target)}}),{root:box,threshold:.15});items.forEach(el=>io.observe(el))};arm();return async()=>{arm();await wait(300);const step=async()=>{for(const el of items.slice(1)){box.scrollTo({top:el.getBoundingClientRect().top-box.getBoundingClientRect().top+box.scrollTop-12,behavior:'smooth'});await wait(1100)}};await step();await wait(800);box.scrollTo({top:0,behavior:'auto'})}},
 'reduced-motion':s=>{const a=$$('.screen',s);return async()=>{a.forEach(x=>x.classList.add('open-d'));await wait(1500);a.forEach(x=>x.classList.remove('open-d'))}}
@@ -916,6 +916,14 @@ $$('#filterSeg button').forEach(b=>b.addEventListener('click',()=>{FILTER=b.data
 const SEND_TO='susannah@mtnhausdigital.com';
 const LBL={approved:'Approved',changes:'Changes requested'};
 let STATE={};try{STATE=JSON.parse(store.get('sl-approvals')||'{}')||{}}catch(e){STATE={}}
+/* Client review received 16 Nov 2026, built in so every browser shows it */
+const REVIEW_AT='2026-11-16T12:00:00.000Z';
+const CLIENT_REVIEW={changes:{quantity:'Animation is good, but control is buggy (looks like it superimposes numbers). No need to update this mock, just calling out that it should not have this bug on the real site.'},
+  approved:['tokens-distance','button','add-to-cart','link-arrow','swatch','option-chip','quick-add','cart-badge','free-shipping','unit-toggle','carousel','card-hover','bundle-card','select','accordion','shop-the-look','cart-drawer','shop-sheet','search','gallery','lightbox','size-guide','notify-me','sticky-atc','scroll-reveal','reduced-motion']};
+const REVISED={hero:'Revised 16 Nov: steady zoom, no ease in or out',ticker:'Revised 16 Nov: one block at a time, then a pause'};
+CLIENT_REVIEW.approved.forEach(id=>{if(!STATE[id])STATE[id]={status:'approved',note:'',at:REVIEW_AT}});
+Object.entries(CLIENT_REVIEW.changes).forEach(([id,note])=>{if(!STATE[id])STATE[id]={status:'changes',note,at:REVIEW_AT}});
+Object.keys(REVISED).forEach(id=>{const s=STATE[id];if(s&&s.at<=REVIEW_AT)delete STATE[id]});
 const persist=()=>store.set('sl-approvals',JSON.stringify(STATE));
 const fmt=iso=>{try{return new Date(iso).toLocaleDateString(undefined,{month:'short',day:'numeric'})+' '+new Date(iso).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'})}catch(e){return ''}};
 function applyFilter(){$$('.item').forEach(a=>{const st=(STATE[a.dataset.id]||{}).status||'open';a.hidden=!(FILTER==='all'||FILTER===st)});$$('.group-head').forEach(h=>{let n=h.nextElementSibling,any=false;while(n&&!n.classList.contains('group-head')){if(n.classList.contains('item')&&!n.hidden)any=true;n=n.nextElementSibling}h.hidden=!any&&FILTER!=='all'})}
@@ -923,10 +931,10 @@ const who={get name(){return store.get('sl-reviewer')||''}};
 function renderState(){
   let a=0,c=0;
   ITEMS.forEach(it=>{const s=STATE[it.id]||{};const st=s.status;
-    const pill=$(`[data-status="${it.id}"]`);pill.className='status'+(st?' '+st:'');pill.textContent=st?LBL[st]:'Not reviewed';
+    const pill=$(`[data-status="${it.id}"]`);pill.className='status'+(st?' '+st:'');pill.textContent=st?LBL[st]:(REVISED[it.id]?'Updated, please review':'Not reviewed');
     const dot=$(`[data-dot="${it.id}"]`);dot.className='dot'+(st?' '+st:'');
     const box=$(`[data-approve="${it.id}"]`);
-    $('[data-who]',box).textContent=st?`${LBL[st]}, ${fmt(s.at)}`:'';
+    $('[data-who]',box).textContent=st?`${LBL[st]}, ${fmt(s.at)}`:(REVISED[it.id]||'');
     const note=$('[data-note]',box);note.innerHTML='';if(st==='changes'&&s.note){const q=document.createElement('div');q.className='note-quote';q.textContent=s.note;note.appendChild(q)}
     if(st==='approved')a++;else if(st==='changes')c++;});
   $('#sumApproved').textContent=a;$('#sumChanges').textContent=c;$('#sumOpen').textContent=ITEMS.length-a-c;$('#meter').style.width=(a/ITEMS.length*100)+'%';
